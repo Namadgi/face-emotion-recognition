@@ -70,12 +70,25 @@ class FERHandler(BaseHandler):
             y = self.model(full_image, self.device)
         return y
 
-    def postprocess(self, face):
+    def postprocess(self, face = None, code = 0):
         """
         Return inference result.
         :param inference_output: list of inference output
         :return: list of predict results
         """
+        
+        if code != 0: 
+            err_descrs = [
+                'No face, too small or bad quality',
+                'Found more than ONE face',
+                'Face is not centered',
+            ]   
+            return [{
+                'code': code,
+                'description': err_descrs[code - 2],
+                'result': 'ERROR',
+            }]
+        
         img = np.array(face)
         img = cv2.resize(img, self.INPUT_SIZE)
         img = img.astype(np.float32)
@@ -87,14 +100,14 @@ class FERHandler(BaseHandler):
         results_ort = self.onnx_model.run(["emotion_preds"], {"x": img})[0]
         label = int(np.argmax(results_ort[0]))
 
-        idx_to_class = {
-            0: 'Anger', 1: 'Disgust', 2: 'Fear', 3: 'Happiness', 4: 'Neutral', 5: 'Sadness', 6: 'Surprise'
-        }
+        classes = [
+            'Anger', 'Disgust', 'Fear', 'Happiness', 'Neutral', 'Sadness', 'Surprise'
+        ]
 
         return [{
-            'code': label,
-            'description': idx_to_class[label],
-            'result': label,
+            'code': code,
+            'description': 'Successful check',
+            'result': classes[label],
         }]
         
 
@@ -110,8 +123,10 @@ class FERHandler(BaseHandler):
             self.load_model()
         
         full_image = self.preprocess(data)
-        face = self.inference(full_image)
-        return self.postprocess(face)
+        res = self.inference(full_image)
+        if isinstance(res, int):
+            return self.postprocess(code=res)
+        return self.postprocess(face=res)
     
     def load_model(self):
         self.onnx_model = ort.InferenceSession("mobnet.onnx", providers=["CPUExecutionProvider"])

@@ -8,3 +8,4 @@ data/
 archiver.sh
 *.ipynb
 *.py
+*.json
