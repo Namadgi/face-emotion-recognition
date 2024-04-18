@@ -1,0 +1,10 @@
+.git
+.gcloudignore
+.gitignore
+model_weights/
+models/
+handlers/
+data/
+archiver.sh
+*.ipynb
+*.py
