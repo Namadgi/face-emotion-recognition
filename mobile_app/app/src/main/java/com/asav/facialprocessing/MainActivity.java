@@ -206,11 +206,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private void recognizeEmotions(){
         if(isImageLoaded()) {
-            if (checkBoxTorchTf.isChecked()) {
-                mtcnnDetectionAndEmotionPyTorchRecognition();
-            } else {
-                mtcnnDetectionAndAttributesRecognition(emotionClassifierTfLite);
-            }
+            // if (checkBoxTorchTf.isChecked()) {
+            //     // mtcnnDetectionAndEmotionPyTorchRecognition();
+            // } else {
+            mtcnnDetectionAndAttributesRecognition(emotionClassifierTfLite);
+            // }
         }
 
     }
@@ -340,58 +340,58 @@ public class MainActivity extends AppCompatActivity {
         }
         setImage(tempBmp);
     }
-    private void mtcnnDetectionAndEmotionPyTorchRecognition(){
-        Bitmap bmp = sampledImage;
-        Bitmap resizedBitmap=bmp;
-        double minSize=600.0;
-        double scale=Math.min(bmp.getWidth(),bmp.getHeight())/minSize;
-        if(scale>1.0) {
-            resizedBitmap = Bitmap.createScaledBitmap(bmp, (int)(bmp.getWidth()/scale), (int)(bmp.getHeight()/scale), false);
-            bmp=resizedBitmap;
-        }
-        long startTime = SystemClock.uptimeMillis();
-        Vector<Box> bboxes = mtcnnFaceDetector.detectFaces(resizedBitmap, minFaceSize);//(int)(bmp.getWidth()*MIN_FACE_SIZE));
-        Log.i(TAG, "Timecost to run mtcnn: " + Long.toString(SystemClock.uptimeMillis() - startTime));
+    // private void mtcnnDetectionAndEmotionPyTorchRecognition(){
+    //     Bitmap bmp = sampledImage;
+    //     Bitmap resizedBitmap=bmp;
+    //     double minSize=600.0;
+    //     double scale=Math.min(bmp.getWidth(),bmp.getHeight())/minSize;
+    //     if(scale>1.0) {
+    //         resizedBitmap = Bitmap.createScaledBitmap(bmp, (int)(bmp.getWidth()/scale), (int)(bmp.getHeight()/scale), false);
+    //         bmp=resizedBitmap;
+    //     }
+    //     long startTime = SystemClock.uptimeMillis();
+    //     Vector<Box> bboxes = mtcnnFaceDetector.detectFaces(resizedBitmap, minFaceSize);//(int)(bmp.getWidth()*MIN_FACE_SIZE));
+    //     Log.i(TAG, "Timecost to run mtcnn: " + Long.toString(SystemClock.uptimeMillis() - startTime));
 
-        Bitmap tempBmp = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(tempBmp);
-        Paint p = new Paint();
-        p.setStyle(Paint.Style.STROKE);
-        p.setAntiAlias(true);
-        p.setFilterBitmap(true);
-        p.setDither(true);
-        p.setColor(Color.BLUE);
-        p.setStrokeWidth(5);
+    //     Bitmap tempBmp = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), Bitmap.Config.ARGB_8888);
+    //     Canvas c = new Canvas(tempBmp);
+    //     Paint p = new Paint();
+    //     p.setStyle(Paint.Style.STROKE);
+    //     p.setAntiAlias(true);
+    //     p.setFilterBitmap(true);
+    //     p.setDither(true);
+    //     p.setColor(Color.BLUE);
+    //     p.setStrokeWidth(5);
 
-        Paint p_text = new Paint();
-        p_text.setColor(Color.WHITE);
-        p_text.setStyle(Paint.Style.FILL);
-        p_text.setColor(Color.BLUE);
-        p_text.setTextSize(24);
+    //     Paint p_text = new Paint();
+    //     p_text.setColor(Color.WHITE);
+    //     p_text.setStyle(Paint.Style.FILL);
+    //     p_text.setColor(Color.BLUE);
+    //     p_text.setTextSize(24);
 
-        c.drawBitmap(bmp, 0, 0, null);
+    //     c.drawBitmap(bmp, 0, 0, null);
 
-        for (Box box : bboxes) {
-            android.graphics.Rect bbox = box.transform2Rect();//new android.graphics.Rect(Math.max(0,box.left()),Math.max(0,box.top()),box.right(),box.bottom());
-            p.setColor(Color.RED);
-            c.drawRect(bbox, p);
-            if(emotionClassifierPyTorch!=null && bbox.width()>0 && bbox.height()>0) {
-                int w=bmp.getWidth();
-                int h=bmp.getHeight();
-                android.graphics.Rect bboxOrig = new android.graphics.Rect(
-                        Math.max(0,w*bbox.left / resizedBitmap.getWidth()),
-                        Math.max(0,h*bbox.top / resizedBitmap.getHeight()),
-                        Math.min(w,w * bbox.right / resizedBitmap.getWidth()),
-                        Math.min(h,h * bbox.bottom / resizedBitmap.getHeight())
-                );
-                Bitmap faceBitmap = Bitmap.createBitmap(bmp, bboxOrig.left, bboxOrig.top, bboxOrig.width(), bboxOrig.height());
-                String res=emotionClassifierPyTorch.recognize(faceBitmap);
-                c.drawText(res, Math.max(0,bbox.left), Math.max(0, bbox.top - 20), p_text);
-                Log.i(TAG, res);
-            }
-        }
-        setImage(tempBmp);
-    }
+    //     for (Box box : bboxes) {
+    //         android.graphics.Rect bbox = box.transform2Rect();//new android.graphics.Rect(Math.max(0,box.left()),Math.max(0,box.top()),box.right(),box.bottom());
+    //         p.setColor(Color.RED);
+    //         c.drawRect(bbox, p);
+    //         if(emotionClassifierPyTorch!=null && bbox.width()>0 && bbox.height()>0) {
+    //             int w=bmp.getWidth();
+    //             int h=bmp.getHeight();
+    //             android.graphics.Rect bboxOrig = new android.graphics.Rect(
+    //                     Math.max(0,w*bbox.left / resizedBitmap.getWidth()),
+    //                     Math.max(0,h*bbox.top / resizedBitmap.getHeight()),
+    //                     Math.min(w,w * bbox.right / resizedBitmap.getWidth()),
+    //                     Math.min(h,h * bbox.bottom / resizedBitmap.getHeight())
+    //             );
+    //             Bitmap faceBitmap = Bitmap.createBitmap(bmp, bboxOrig.left, bboxOrig.top, bboxOrig.width(), bboxOrig.height());
+    //             String res=emotionClassifierPyTorch.recognize(faceBitmap);
+    //             c.drawText(res, Math.max(0,bbox.left), Math.max(0, bbox.top - 20), p_text);
+    //             Log.i(TAG, res);
+    //         }
+    //     }
+    //     setImage(tempBmp);
+    // }
 
 
     private void setupCameraX() {
