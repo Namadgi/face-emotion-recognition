@@ -16,7 +16,7 @@ Moreover, the current branch provides the PyTorch Mobile version of a model as [
 
 1. Clone this repository to your local machine.
    ```
-   git clone https://github.com/Namadgi/face-emotion-recognition.git
+   git clone -b mobile https://github.com/Namadgi/face-emotion-recognition.git
    ```
 2. Open the project in your preferred IDE (Android Studio for Android).
 3. Build and run the project on your device or emulator.
