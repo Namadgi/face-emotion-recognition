@@ -25,7 +25,49 @@ Moreover, the current branch provides the PyTorch Mobile version of a model as [
 
 ## SDK Usage
 
-Depending on the OS and platform used, install the framework for PyTorch mobile inference...
+Depending on the OS and platform used, install the framework for PyTorch mobile inference.
+To use it on Flutter it is recommended to use the following package: [pytorch_mobile](https://pub.dev/packages/pytorch_mobile).
+
+### Install Package and Create Asset
+
+To use this plugin, add `pytorch_mobile` as a dependency in your `pubspec.yaml` file.
+Create a `assets` folder with your pytorch model and labels if needed. Modify `pubspec.yaml` accordingly.
+
+```
+assets:
+ - assets/models/fer.ptl
+```
+Run flutter pub get
+
+### Load Model
+```
+Model customModel = await PyTorchMobile
+        .loadModel('assets/models/fer.ptl');
+```
+### Load Image
+Load an image as an RGB BitMap with a (`H, W, C`) shape, where `H` and `W` are height and width of the image, and `C` is color-channel dimension (it always should be 3).
+To send the image to the model:
+
+```
+_imagePrediction = await _imageModel!.getImagePrediction(
+        File(image!.path), 224, 224, "assets/labels/labels.csv");
+```
+
+The result is the label. The negative values signify one of the errors. Other values stand for emotion class:
+```
+{
+   -2: "No face, too small or bad quality",
+   -3: "Found more than ONE face",
+   -4: "Face is not centered"
+    0: "Anger",
+    1: "Disgust",
+    2: "Fear",
+    3: "Happiness",
+    4: "Neutral",
+    5: "Sadness",
+    6: "Surprise"
+}
+```
 
 ## Credits
 
