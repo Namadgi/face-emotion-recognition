@@ -58,7 +58,7 @@ The result is the label. The negative values signify one of the errors. Other va
 {
    -2: "No face, too small or bad quality",
    -3: "Found more than ONE face",
-   -4: "Face is not centered"
+   -4: "Face is not centered",
     0: "Anger",
     1: "Disgust",
     2: "Fear",
